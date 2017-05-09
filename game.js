@@ -33,12 +33,12 @@ jGame.fnGetPlayerChoice = function(sNickname, sChoice) {
 
 	    	if (jGame.aMatches[0].wins.player == 2) {
 				console.log("------------------ MATCH ENDED " + jGame.aMatches[0].player.nickname + " WON -------------------");
-				return {"winner": jGame.aMatches[0].player.nickname};
+				return {"winner": jGame.aMatches[0].player.nickname, "loser": jGame.aMatches[0].oponent.nickname};
 	    	} 
 
 	    	if (jGame.aMatches[0].wins.oponent == 2) {
 	    		console.log("------------------ MATCH ENDED " + jGame.aMatches[0].oponent.nickname + " WON -------------------");
-				return {"winner": jGame.aMatches[0].oponent.nickname};
+				return {"winner": jGame.aMatches[0].oponent.nickname, "loser": jGame.aMatches[0].player.nickname};
 	    	}
 
 	    	jGame.aMatches[0].player.choice = undefined;
