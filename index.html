@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Rock Paper Scissors</title>
+  <style type="text/css">
+    * {
+      margin: 0px;
+      padding: 0px;
+      box-sizing: border-box;
+    }
+
+    .page-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      height: 100vh;
+      
+    }
+
+    #lblHands{
+      display: flex;
+      justify-content: space-around;
+      margin-top: 100px;
+      margin-bottom: 50px;
+    }
+
+  </style>
+</head>
+<body>
+	<div class="page-container">
+
+		<div id="welcome"> 
+			<h1>Welcome</h1>
+			<h2>Please enter your nickname</h2>
+			<input type="text" name="txtName" id="txtName">
+			<button id="btnSend">Play</button>
+		</div>  
+    
+    <div id="game-container" style="display:none">
+      <h1>Game started, good luck!</h1>
+      <h2>Click on your choice</h2>
+      <div id="lblHands">
+        <div>
+          <i id="rock" class="choice fa fa-hand-rock-o fa-5x" aria-hidden="true"></i>  
+        </div>
+        <div>
+          <i id="paper" class="choice fa fa-hand-paper-o fa-5x" aria-hidden="true"></i>
+        </div>
+        <div>
+          <i id="scissors" class="choice fa fa-hand-scissors-o fa-5x" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+
+		<div class="side-bar">
+			<div>
+        <h3>Active Users</h3>
+				<label id="lblActiveUsers"></label>
+			</div>
+			<div>
+        <h3>Match</h3>
+				<label id="match"></label>
+			</div>
+		</div>
+	</div>
+  <script src="https://use.fontawesome.com/10e56d7863.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.slim.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+  	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+  	<script type="text/javascript">
+  		var socket = io.connect("http://localhost");
+
+  		$("#btnSend").click(function(){
+  			var sName = $("#txtName").val();
+  			if(sName !== ""){
+          $("#welcome").hide();
+          $("#game-container").show();
+  				console.log(sName);
+  				socket.emit("register player", {"name": sName});
+  			}
+        $("#txtName").val("");
+  		});
+
+      $(".choice").click(function(){
+        let jData = {"choice": ""};
+
+        if( $(this).attr('id') == "rock"){
+          jData.choice = "rock";
+          console.log("CHOICE: " + jData.choice);
+        }
+
+        if( $(this).attr('id') == "paper"){
+          jData.choice = "paper";
+          console.log("CHOICE: " + jData.choice);
+        }
+
+        if( $(this).attr('id') == "scissors"){
+          jData.choice = "scissors";
+          console.log("CHOICE: " + jData.choice);
+        }
+
+        socket.emit("this is the choice", jData);
+      });
+
+  		socket.on("active players", function(jData){
+        console.log(jData);
+        var aNicknames = jData.nicknames;
+        $("#lblActiveUsers").empty();
+        for(var i=0; i < aNicknames.length; i++) {
+          var sNickname = aNicknames[i];
+          $("#lblActiveUsers").append("<div>" + sNickname + "</div");
+        }
+      });
+
+      socket.on("the result", function(jData){
+        console.log(jData);
+      });
+
+  	</script>
+</body>
+</html>
